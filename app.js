@@ -308,6 +308,41 @@ function saveImage() {
   });
 }
 
+function exportData() {
+  const data = {
+    missions,
+    history,
+    avatar,
+    userName,
+    exportedAt: new Date().toISOString()
+  };
+  const blob = new Blob([JSON.stringify(data, null, 2)], { type: "application/json" });
+  const link = document.createElement("a");
+
+  link.download = `system-status-${todayKey}.json`;
+  link.href = URL.createObjectURL(blob);
+  link.click();
+  URL.revokeObjectURL(link.href);
+  log("DATA EXPORTED.");
+}
+
+function importData(data) {
+  if (!Array.isArray(data.missions) || !Array.isArray(data.history)) {
+    throw new Error("Invalid status data.");
+  }
+
+  missions = data.missions;
+  history = data.history;
+  avatar = typeof data.avatar === "string" ? data.avatar : "";
+  userName = typeof data.userName === "string" && data.userName.trim()
+    ? data.userName.trim()
+    : "USER";
+
+  save();
+  render();
+  log("DATA IMPORTED.");
+}
+
 function log(text) {
   document.getElementById("log").textContent = text;
 }
@@ -321,6 +356,10 @@ document.getElementById("openResultButton").addEventListener("click", openResult
 document.getElementById("finishDayButton").addEventListener("click", finishDay);
 document.getElementById("saveImageButton").addEventListener("click", saveImage);
 document.getElementById("closeResultButton").addEventListener("click", closeResult);
+document.getElementById("exportDataButton").addEventListener("click", exportData);
+document.getElementById("importDataButton").addEventListener("click", () => {
+  document.getElementById("importDataInput").click();
+});
 
 document.getElementById("missionList").addEventListener("click", e => {
   const actionTarget = e.target.closest("[data-action]");
@@ -343,6 +382,24 @@ document.getElementById("imageInput").addEventListener("change", e => {
     log("USER IMAGE UPDATED.");
   };
   reader.readAsDataURL(file);
+});
+
+document.getElementById("importDataInput").addEventListener("change", e => {
+  const file = e.target.files[0];
+  if (!file) return;
+
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      importData(JSON.parse(reader.result));
+    } catch {
+      log("DATA IMPORT FAILED.");
+      alert("가져올 수 없는 데이터입니다.");
+    } finally {
+      e.target.value = "";
+    }
+  };
+  reader.readAsText(file);
 });
 
 document.getElementById("missionInput").addEventListener("keydown", e => {
