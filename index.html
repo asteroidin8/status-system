@@ -1,0 +1,415 @@
+<!doctype html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>오늘의 상태창</title>
+
+  <script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
+  <link rel="stylesheet" href="styles.css" />
+</head>
+
+<body>
+  <main>
+    <div class="app rank-f" id="app">
+      <h1>SYSTEM STATUS</h1>
+      <p class="sub">현실 미션을 완료하고 상태창을 갱신합니다.</p>
+
+      <section class="profile">
+        <div class="avatar-wrap">
+          <div class="avatar" id="avatarBox">USER<br>IMAGE</div>
+          <div class="rank-band" id="rankBand">F급</div>
+        </div>
+
+        <div class="stat">
+          PLAYER :: USER<br>
+          RANK :: <span id="rankText">F급</span><br>
+          LV. <span id="level">1</span><br>
+          EXP <span id="currentExp">0</span> / 100
+          <div class="bar"><div class="bar-fill" id="expBar"></div></div>
+          CLEAR RATE :: <span id="clearRate">0</span>%
+          <input type="file" id="imageInput" accept="image/*" />
+        </div>
+      </section>
+
+      <div class="section-title">TODAY MISSION</div>
+
+      <div class="add">
+        <input id="missionInput" placeholder="미션 입력" />
+        <select id="statInput">
+          <option value="focus">집중력</option>
+          <option value="energy">체력</option>
+          <option value="knowledge">지식</option>
+          <option value="life">생활력</option>
+        </select>
+        <select id="expInput">
+          <option value="5">EASY</option>
+          <option value="15" selected>NORMAL</option>
+          <option value="30">HARD</option>
+          <option value="60">BOSS</option>
+        </select>
+      </div>
+
+      <button onclick="addMission()">MISSION ACCEPT</button>
+
+      <div id="missionList"></div>
+
+      <div class="section-title">ACTIVITY RECORD</div>
+
+      <div class="record-grid">
+        <div class="record-card">
+          STREAK
+          <strong id="streakRecord">0 DAY</strong>
+        </div>
+        <div class="record-card">
+          AVG CLEAR
+          <strong id="avgClearRecord">0%</strong>
+        </div>
+        <div class="record-card">
+          TOTAL EXP
+          <strong id="totalExpRecord">0</strong>
+        </div>
+        <div class="record-card">
+          MISSIONS
+          <strong id="totalMissionRecord">0</strong>
+        </div>
+      </div>
+
+      <div class="section-title">STAT</div>
+      <div class="stats-grid" id="statsGrid"></div>
+
+      <div class="section-title">SYSTEM LOG</div>
+      <div class="log" id="log">SYSTEM READY.</div>
+
+      <div class="actions">
+        <button onclick="openResult()">RESULT</button>
+        <button onclick="finishDay()">FINISH DAY</button>
+      </div>
+    </div>
+  </main>
+
+  <div class="modal" id="modal">
+    <div class="modal-inner">
+      <div class="result-card" id="resultCard">
+        <div class="result-title">SYSTEM RESULT</div>
+
+        <div class="result-profile">
+          <div class="result-avatar">
+            <div class="avatar" id="resultAvatar">USER</div>
+            <div class="rank-band" id="resultRankBand">F급</div>
+          </div>
+
+          <div class="result-text" id="resultHeader"></div>
+        </div>
+
+        <div class="result-text" id="resultText"></div>
+      </div>
+
+      <div class="modal-buttons">
+        <button onclick="saveImage()">IMAGE SAVE</button>
+        <button onclick="closeResult()">CLOSE</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    let missions = JSON.parse(localStorage.getItem("status_missions")) || [];
+    let history = JSON.parse(localStorage.getItem("status_history")) || [];
+    let avatar = localStorage.getItem("status_avatar") || "";
+
+    const todayKey = new Date().toISOString().slice(0, 10);
+
+    const statNames = {
+      focus: "집중력",
+      energy: "체력",
+      knowledge: "지식",
+      life: "생활력"
+    };
+
+    function save() {
+      localStorage.setItem("status_missions", JSON.stringify(missions));
+      localStorage.setItem("status_history", JSON.stringify(history));
+      localStorage.setItem("status_avatar", avatar);
+    }
+
+    function addMission() {
+      const input = document.getElementById("missionInput");
+      const name = input.value.trim();
+
+      if (!name) return;
+
+      missions.push({
+        id: Date.now(),
+        date: todayKey,
+        name,
+        stat: document.getElementById("statInput").value,
+        exp: Number(document.getElementById("expInput").value),
+        done: false
+      });
+
+      input.value = "";
+      log(`MISSION ACCEPTED :: ${name}`);
+      save();
+      render();
+    }
+
+    function toggleMission(id) {
+      const mission = missions.find(m => m.id === id);
+      if (!mission) return;
+
+      mission.done = !mission.done;
+
+      if (mission.done) {
+        log(`MISSION CLEARED :: ${mission.name}\nEXP +${mission.exp}\n${statNames[mission.stat]} +1`);
+      } else {
+        log(`MISSION RESTORED :: ${mission.name}`);
+      }
+
+      save();
+      render();
+    }
+
+    function removeMission(id) {
+      missions = missions.filter(m => m.id !== id);
+      log("MISSION DELETED.");
+      save();
+      render();
+    }
+
+    function getTodayStats() {
+      const done = missions.filter(m => m.done);
+      const totalExp = done.reduce((sum, m) => sum + m.exp, 0);
+      const clearRate = missions.length ? Math.round(done.length / missions.length * 100) : 0;
+
+      const statGain = { focus: 0, energy: 0, knowledge: 0, life: 0 };
+      done.forEach(m => statGain[m.stat] += Math.max(1, Math.round(m.exp / 15)));
+
+      return { done, totalExp, clearRate, statGain };
+    }
+
+    function getRecordStats() {
+      const totalExpFromHistory = history.reduce((sum, h) => sum + h.exp, 0);
+      const totalMissionFromHistory = history.reduce((sum, h) => sum + h.doneCount, 0);
+
+      const today = getTodayStats();
+
+      const totalExp = totalExpFromHistory + today.totalExp;
+      const totalMission = totalMissionFromHistory + today.done.length;
+
+      const allClearRates = [
+        ...history.map(h => h.clearRate),
+        missions.length ? today.clearRate : null
+      ].filter(v => v !== null);
+
+      const avgClear = allClearRates.length
+        ? Math.round(allClearRates.reduce((sum, v) => sum + v, 0) / allClearRates.length)
+        : 0;
+
+      return {
+        totalExp,
+        totalMission,
+        avgClear,
+        streak: getStreak()
+      };
+    }
+
+    function getLevel(totalExp) {
+      return Math.floor(totalExp / 100) + 1;
+    }
+
+    function getCurrentExp(totalExp) {
+      return totalExp % 100;
+    }
+
+    function getRank(level) {
+      if (level >= 35) return { name: "S급", className: "rank-s" };
+      if (level >= 25) return { name: "A급", className: "rank-a" };
+      if (level >= 18) return { name: "B급", className: "rank-b" };
+      if (level >= 12) return { name: "C급", className: "rank-c" };
+      if (level >= 7) return { name: "D급", className: "rank-d" };
+      if (level >= 3) return { name: "E급", className: "rank-e" };
+      return { name: "F급", className: "rank-f" };
+    }
+
+    function getStreak() {
+      const completedDates = history
+        .filter(h => h.doneCount > 0)
+        .map(h => h.date);
+
+      if (getTodayStats().done.length > 0) {
+        completedDates.push(todayKey);
+      }
+
+      const unique = [...new Set(completedDates)].sort().reverse();
+
+      let streak = 0;
+      let cursor = new Date(todayKey);
+
+      for (const date of unique) {
+        const expected = cursor.toISOString().slice(0, 10);
+        if (date === expected) {
+          streak++;
+          cursor.setDate(cursor.getDate() - 1);
+        }
+      }
+
+      return streak;
+    }
+
+    function finishDay() {
+      if (!missions.length) {
+        log("NO MISSION DATA.");
+        return;
+      }
+
+      const today = getTodayStats();
+
+      history = history.filter(h => h.date !== todayKey);
+
+      history.push({
+        date: todayKey,
+        totalCount: missions.length,
+        doneCount: today.done.length,
+        clearRate: today.clearRate,
+        exp: today.totalExp
+      });
+
+      missions = [];
+
+      log("DAY RECORD SAVED.\nSYSTEM READY FOR NEXT DAY.");
+      save();
+      render();
+    }
+
+    function render() {
+      const today = getTodayStats();
+      const record = getRecordStats();
+
+      const level = getLevel(record.totalExp);
+      const currentExp = getCurrentExp(record.totalExp);
+      const rank = getRank(level);
+
+      document.getElementById("app").className = `app ${rank.className}`;
+      document.getElementById("rankBand").textContent = rank.name;
+      document.getElementById("rankText").textContent = rank.name;
+      document.getElementById("level").textContent = level;
+      document.getElementById("currentExp").textContent = currentExp;
+      document.getElementById("expBar").style.width = currentExp + "%";
+      document.getElementById("clearRate").textContent = today.clearRate;
+
+      document.getElementById("streakRecord").textContent = `${record.streak} DAY`;
+      document.getElementById("avgClearRecord").textContent = `${record.avgClear}%`;
+      document.getElementById("totalExpRecord").textContent = record.totalExp;
+      document.getElementById("totalMissionRecord").textContent = record.totalMission;
+
+      document.getElementById("missionList").innerHTML = missions.map(m => `
+        <div class="mission ${m.done ? "done" : ""}">
+          <div class="check" onclick="toggleMission(${m.id})"></div>
+          <div>
+            <div class="name">${m.name}</div>
+            <div class="meta">${statNames[m.stat]} · +${m.exp} EXP</div>
+          </div>
+          <button onclick="removeMission(${m.id})">X</button>
+        </div>
+      `).join("");
+
+      document.getElementById("statsGrid").innerHTML = Object.entries(today.statGain).map(([key, value]) => `
+        <div class="stat-row">
+          <div>${statNames[key]}</div>
+          <div class="mini-bar">
+            <div class="mini-fill" style="width:${Math.min(value * 12, 100)}%"></div>
+          </div>
+          <div>+${value}</div>
+        </div>
+      `).join("");
+
+      renderAvatar();
+    }
+
+    function renderAvatar() {
+      const html = avatar ? `<img src="${avatar}" alt="user image" />` : "USER<br>IMAGE";
+      document.getElementById("avatarBox").innerHTML = html;
+      document.getElementById("resultAvatar").innerHTML = avatar ? `<img src="${avatar}" alt="user image" />` : "USER";
+    }
+
+    function openResult() {
+      const today = getTodayStats();
+      const record = getRecordStats();
+      const level = getLevel(record.totalExp);
+      const rank = getRank(level);
+
+      document.getElementById("resultCard").className = `result-card ${rank.className}`;
+      document.getElementById("resultRankBand").textContent = rank.name;
+
+      document.getElementById("resultHeader").textContent =
+`DATE :: ${new Date().toLocaleDateString("ko-KR")}
+RANK :: ${rank.name}
+LV :: ${level}
+TOTAL EXP :: ${record.totalExp}`;
+
+      const cleared = today.done.map(m => `■ ${m.name}`).join("\n") || "NONE";
+
+      const statGain = Object.entries(today.statGain)
+        .map(([key, value]) => `${statNames[key]} +${value}`)
+        .join("\n");
+
+      document.getElementById("resultText").textContent =
+`CLEAR RATE :: ${today.clearRate}%
+MISSION :: ${today.done.length}/${missions.length}
+STREAK :: ${record.streak} DAY
+
+STAT GAIN
+${statGain}
+
+CLEARED
+${cleared}`;
+
+      renderAvatar();
+      document.getElementById("modal").style.display = "flex";
+    }
+
+    function closeResult() {
+      document.getElementById("modal").style.display = "none";
+    }
+
+    function saveImage() {
+      const card = document.getElementById("resultCard");
+
+      html2canvas(card, {
+        backgroundColor: null,
+        scale: 3
+      }).then(canvas => {
+        const link = document.createElement("a");
+        link.download = "system-status-result.png";
+        link.href = canvas.toDataURL("image/png");
+        link.click();
+      });
+    }
+
+    function log(text) {
+      document.getElementById("log").textContent = text;
+    }
+
+    document.getElementById("imageInput").addEventListener("change", e => {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = () => {
+        avatar = reader.result;
+        save();
+        renderAvatar();
+        log("USER IMAGE UPDATED.");
+      };
+      reader.readAsDataURL(file);
+    });
+
+    document.getElementById("missionInput").addEventListener("keydown", e => {
+      if (e.key === "Enter") addMission();
+    });
+
+    render();
+  </script>
+</body>
+</html>
