@@ -17,10 +17,11 @@
       <p class="sub">현실 미션을 완료하고 상태창을 갱신합니다.</p>
 
       <section class="profile">
-        <div class="avatar-wrap">
+        <button class="avatar-wrap avatar-action" id="avatarButton" type="button" aria-label="사용자 이미지 삽입">
           <div class="avatar" id="avatarBox">USER<br>IMAGE</div>
+          <div class="avatar-overlay" id="avatarOverlay">이미지 삽입</div>
           <div class="rank-band" id="rankBand">F급</div>
-        </div>
+        </button>
 
         <div class="stat">
           PLAYER :: USER<br>
@@ -29,8 +30,9 @@
           EXP <span id="currentExp">0</span> / 100
           <div class="bar"><div class="bar-fill" id="expBar"></div></div>
           CLEAR RATE :: <span id="clearRate">0</span>%
-          <input type="file" id="imageInput" accept="image/*" />
         </div>
+
+        <input type="file" id="imageInput" accept="image/*" hidden />
       </section>
 
       <div class="section-title">TODAY MISSION</div>
@@ -331,6 +333,11 @@
       const html = avatar ? `<img src="${avatar}" alt="user image" />` : "USER<br>IMAGE";
       document.getElementById("avatarBox").innerHTML = html;
       document.getElementById("resultAvatar").innerHTML = avatar ? `<img src="${avatar}" alt="user image" />` : "USER";
+      document.getElementById("avatarOverlay").textContent = avatar ? "이미지 수정" : "이미지 삽입";
+      document.getElementById("avatarButton").setAttribute(
+        "aria-label",
+        avatar ? "사용자 이미지 수정" : "사용자 이미지 삽입"
+      );
     }
 
     function openResult() {
@@ -390,6 +397,10 @@ ${cleared}`;
     function log(text) {
       document.getElementById("log").textContent = text;
     }
+
+    document.getElementById("avatarButton").addEventListener("click", () => {
+      document.getElementById("imageInput").click();
+    });
 
     document.getElementById("imageInput").addEventListener("change", e => {
       const file = e.target.files[0];

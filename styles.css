@@ -45,8 +45,21 @@ h1 {
 }
 
 .avatar-wrap {
+  position: relative;
   border: 2px solid var(--rank-color);
   box-shadow: 0 0 12px color-mix(in srgb, var(--rank-color) 55%, transparent);
+}
+
+.avatar-action {
+  display: block;
+  padding: 0;
+  text-align: center;
+}
+
+.avatar-action:hover,
+.avatar-action:focus-visible {
+  background: #07090f;
+  color: #eaf1ff;
 }
 
 .avatar {
@@ -64,6 +77,24 @@ h1 {
   height: 100%;
   object-fit: cover;
   filter: grayscale(1) contrast(1.1);
+}
+
+.avatar-overlay {
+  position: absolute;
+  inset: 0 0 21px;
+  display: grid;
+  place-items: center;
+  background: rgba(7,9,15,0.78);
+  color: var(--rank-color);
+  font-size: 11px;
+  font-weight: bold;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.avatar-action:hover .avatar-overlay,
+.avatar-action:focus-visible .avatar-overlay {
+  opacity: 1;
 }
 
 .rank-band {
@@ -94,7 +125,7 @@ h1 {
   background: var(--rank-color);
 }
 
-input, select, button {
+:where(input, select, button, .interactive-control) {
   width: 100%;
   background: #07090f;
   color: #eaf1ff;
@@ -104,19 +135,22 @@ input, select, button {
   font-size: 13px;
 }
 
-button {
+:where(select, button, .interactive-control) {
   cursor: pointer;
+}
+
+:where(button, .interactive-control) {
   font-weight: bold;
 }
 
-button:hover {
+:where(button, .interactive-control):hover,
+:where(button, .interactive-control):focus-visible {
   background: var(--rank-color);
   color: #07090f;
 }
 
-input[type="file"] {
-  font-size: 11px;
-  margin-top: 8px;
+button {
+  appearance: none;
 }
 
 .section-title {
