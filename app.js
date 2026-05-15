@@ -12,6 +12,8 @@ const statNames = {
   life: "생활력"
 };
 
+const resultMissionLimit = 5;
+
 function escapeHtml(text) {
   return String(text)
     .replaceAll("&", "&amp;")
@@ -262,7 +264,12 @@ LV :: ${level}
 TOTAL EXP :: ${record.totalExp}`;
   document.getElementById("resultDate").textContent = new Date().toLocaleDateString("ko-KR");
 
-  const cleared = today.done.map(m => `■ ${m.name}`).join("\n") || "NONE";
+  const displayedMissions = today.done.slice(0, resultMissionLimit);
+  const hiddenMissionCount = Math.max(today.done.length - displayedMissions.length, 0);
+  const cleared = [
+    ...displayedMissions.map(m => `■ ${m.name}`),
+    hiddenMissionCount ? `■ 외 ${hiddenMissionCount}개` : ""
+  ].filter(Boolean).join("\n") || "NONE";
 
   const statGain = Object.entries(today.statGain)
     .map(([key, value]) => `${statNames[key]} +${value}`)
