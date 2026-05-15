@@ -74,6 +74,10 @@ function toggleMission(id) {
 }
 
 function removeMission(id) {
+  const mission = missions.find(m => m.id === id);
+  if (!mission) return;
+  if (!confirm(`미션을 삭제할까요?\n${mission.name}`)) return;
+
   missions = missions.filter(m => m.id !== id);
   log("MISSION DELETED.");
   save();
