@@ -192,12 +192,12 @@ function render() {
 
   document.getElementById("missionList").innerHTML = missions.map(m => `
     <div class="mission ${m.done ? "done" : ""}">
-      <div class="check" onclick="toggleMission(${m.id})"></div>
+      <div class="check" data-action="toggle" data-id="${m.id}"></div>
       <div>
         <div class="name">${m.name}</div>
         <div class="meta">${statNames[m.stat]} · +${m.exp} EXP</div>
       </div>
-      <button onclick="removeMission(${m.id})">X</button>
+      <button data-action="remove" data-id="${m.id}">X</button>
     </div>
   `).join("");
 
@@ -286,6 +286,21 @@ function log(text) {
 
 document.getElementById("avatarButton").addEventListener("click", () => {
   document.getElementById("imageInput").click();
+});
+
+document.getElementById("addMissionButton").addEventListener("click", addMission);
+document.getElementById("openResultButton").addEventListener("click", openResult);
+document.getElementById("finishDayButton").addEventListener("click", finishDay);
+document.getElementById("saveImageButton").addEventListener("click", saveImage);
+document.getElementById("closeResultButton").addEventListener("click", closeResult);
+
+document.getElementById("missionList").addEventListener("click", e => {
+  const actionTarget = e.target.closest("[data-action]");
+  if (!actionTarget) return;
+
+  const id = Number(actionTarget.dataset.id);
+  if (actionTarget.dataset.action === "toggle") toggleMission(id);
+  if (actionTarget.dataset.action === "remove") removeMission(id);
 });
 
 document.getElementById("imageInput").addEventListener("change", e => {
