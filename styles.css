@@ -31,9 +31,32 @@ h1 {
 }
 
 .sub {
-  margin: 0 0 18px;
+  margin: 0;
   font-size: 12px;
   opacity: 0.65;
+}
+
+.app-header {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: start;
+  margin-bottom: 18px;
+}
+
+.header-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.icon-button {
+  width: 32px;
+  height: 32px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+  font-size: 16px;
+  line-height: 1;
 }
 
 .profile {
@@ -181,6 +204,20 @@ button {
   grid-template-columns: 1fr 92px 92px;
   gap: 8px;
   margin-bottom: 8px;
+}
+
+.mission-list {
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.mission-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.mission-list::-webkit-scrollbar-thumb {
+  background: var(--rank-color);
 }
 
 .mission {

@@ -13,8 +13,17 @@
 <body>
   <main>
     <div class="app rank-f" id="app">
-      <h1>SYSTEM STATUS</h1>
-      <p class="sub">현실 미션을 완료하고 상태창을 갱신합니다.</p>
+      <header class="app-header">
+        <div>
+          <h1>SYSTEM STATUS</h1>
+          <p class="sub">현실 미션을 완료하고 상태창을 갱신합니다.</p>
+        </div>
+
+        <div class="header-actions">
+          <button id="exportDataButton" class="icon-button" type="button" aria-label="데이터 내보내기">⇩</button>
+          <button id="importDataButton" class="icon-button" type="button" aria-label="데이터 가져오기">⇧</button>
+        </div>
+      </header>
 
       <section class="profile">
         <button class="avatar-wrap avatar-action" id="avatarButton" type="button" aria-label="사용자 이미지 삽입">
@@ -58,7 +67,7 @@
 
       <button id="addMissionButton">MISSION ACCEPT</button>
 
-      <div id="missionList"></div>
+      <div class="mission-list" id="missionList"></div>
 
       <div class="section-title">ACTIVITY RECORD</div>
 
@@ -90,8 +99,6 @@
       <div class="actions">
         <button id="openResultButton">RESULT</button>
         <button id="finishDayButton">FINISH DAY</button>
-        <button id="exportDataButton">EXPORT DATA</button>
-        <button id="importDataButton">IMPORT DATA</button>
       </div>
 
       <input type="file" id="importDataInput" accept="application/json" hidden />
