@@ -12,6 +12,15 @@ const statNames = {
   life: "생활력"
 };
 
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
 function save() {
   localStorage.setItem("status_missions", JSON.stringify(missions));
   localStorage.setItem("status_history", JSON.stringify(history));
@@ -194,7 +203,7 @@ function render() {
     <div class="mission ${m.done ? "done" : ""}">
       <div class="check" data-action="toggle" data-id="${m.id}"></div>
       <div>
-        <div class="name">${m.name}</div>
+        <div class="name">${escapeHtml(m.name)}</div>
         <div class="meta">${statNames[m.stat]} · +${m.exp} EXP</div>
       </div>
       <button data-action="remove" data-id="${m.id}">X</button>
