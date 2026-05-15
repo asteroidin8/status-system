@@ -13,7 +13,7 @@ const statNames = {
   life: "생활력"
 };
 
-const resultMissionLimit = 5;
+const resultMissionLimit = 3;
 
 function escapeHtml(text) {
   return String(text)
@@ -304,9 +304,12 @@ TOTAL EXP :: ${record.totalExp}`;
     hiddenMissionCount ? `■ 외 ${hiddenMissionCount}개` : ""
   ].filter(Boolean).join("\n") || "NONE";
 
-  const statExp = Object.entries(today.statExp)
-    .map(([key, value]) => `${statNames[key]} +${value} EXP`)
-    .join("\n");
+  const statExpEntries = Object.entries(today.statExp)
+    .map(([key, value]) => `${statNames[key]} +${value} EXP`);
+  const statExp = [
+    statExpEntries.slice(0, 2).join(" / "),
+    statExpEntries.slice(2).join(" / ")
+  ].join("\n");
 
   document.getElementById("resultText").textContent =
 `CLEAR RATE :: ${today.clearRate}%
@@ -328,6 +331,12 @@ function closeResult() {
 }
 
 function saveImage() {
+  if (typeof html2canvas !== "function") {
+    log("RESULT IMAGE SAVE FAILED.");
+    alert("이미지 저장 도구를 불러오지 못했습니다.");
+    return;
+  }
+
   const card = document.getElementById("resultCard");
 
   html2canvas(card, {
@@ -337,7 +346,13 @@ function saveImage() {
     const link = document.createElement("a");
     link.download = "system-status-result.png";
     link.href = canvas.toDataURL("image/png");
+    document.body.appendChild(link);
     link.click();
+    link.remove();
+    log("RESULT IMAGE SAVED.");
+  }).catch(() => {
+    log("RESULT IMAGE SAVE FAILED.");
+    alert("이미지 저장에 실패했습니다.");
   });
 }
 
