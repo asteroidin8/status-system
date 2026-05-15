@@ -92,9 +92,13 @@ function getTodayStats() {
   const clearRate = missions.length ? Math.round(done.length / missions.length * 100) : 0;
 
   const statGain = { focus: 0, energy: 0, knowledge: 0, life: 0 };
-  done.forEach(m => statGain[m.stat] += Math.max(1, Math.round(m.exp / 15)));
+  const statExp = { focus: 0, energy: 0, knowledge: 0, life: 0 };
+  done.forEach(m => {
+    statGain[m.stat] += Math.max(1, Math.round(m.exp / 15));
+    statExp[m.stat] += m.exp;
+  });
 
-  return { done, totalExp, clearRate, statGain };
+  return { done, totalExp, clearRate, statGain, statExp };
 }
 
 function getRecordStats() {
@@ -271,8 +275,8 @@ TOTAL EXP :: ${record.totalExp}`;
     hiddenMissionCount ? `■ 외 ${hiddenMissionCount}개` : ""
   ].filter(Boolean).join("\n") || "NONE";
 
-  const statGain = Object.entries(today.statGain)
-    .map(([key, value]) => `${statNames[key]} +${value}`)
+  const statExp = Object.entries(today.statExp)
+    .map(([key, value]) => `${statNames[key]} +${value} EXP`)
     .join("\n");
 
   document.getElementById("resultText").textContent =
@@ -281,7 +285,7 @@ MISSION :: ${today.done.length}/${missions.length}
 STREAK :: ${record.streak} DAY
 
 STAT GAIN
-${statGain}
+${statExp}
 
 CLEARED
 ${cleared}`;
