@@ -3,7 +3,7 @@ let history = JSON.parse(localStorage.getItem("status_history")) || [];
 let avatar = localStorage.getItem("status_avatar") || "";
 let userName = localStorage.getItem("status_user_name") || "USER";
 
-const todayKey = new Date().toISOString().slice(0, 10);
+const todayKey = formatLocalDate();
 
 const statNames = {
   focus: "집중력",
@@ -19,6 +19,14 @@ function escapeHtml(text) {
     .replaceAll(">", "&gt;")
     .replaceAll('"', "&quot;")
     .replaceAll("'", "&#039;");
+}
+
+function formatLocalDate(date = new Date()) {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, "0");
+  const day = String(date.getDate()).padStart(2, "0");
+
+  return `${year}-${month}-${day}`;
 }
 
 function save() {
@@ -142,7 +150,7 @@ function getStreak() {
   let cursor = new Date(todayKey);
 
   for (const date of unique) {
-    const expected = cursor.toISOString().slice(0, 10);
+    const expected = formatLocalDate(cursor);
     if (date === expected) {
       streak++;
       cursor.setDate(cursor.getDate() - 1);
