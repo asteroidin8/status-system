@@ -24,7 +24,10 @@
         </button>
 
         <div class="stat">
-          PLAYER :: USER<br>
+          <label class="player-name">
+            PLAYER ::
+            <input id="userNameInput" maxlength="16" aria-label="사용자 이름" />
+          </label><br>
           RANK :: <span id="rankText">F급</span><br>
           LV. <span id="level">1</span><br>
           EXP <span id="currentExp">0</span> / 100
@@ -106,6 +109,7 @@
         </div>
 
         <div class="result-text" id="resultText"></div>
+        <div class="result-date" id="resultDate"></div>
       </div>
 
       <div class="modal-buttons">
@@ -119,6 +123,7 @@
     let missions = JSON.parse(localStorage.getItem("status_missions")) || [];
     let history = JSON.parse(localStorage.getItem("status_history")) || [];
     let avatar = localStorage.getItem("status_avatar") || "";
+    let userName = localStorage.getItem("status_user_name") || "USER";
 
     const todayKey = new Date().toISOString().slice(0, 10);
 
@@ -133,6 +138,7 @@
       localStorage.setItem("status_missions", JSON.stringify(missions));
       localStorage.setItem("status_history", JSON.stringify(history));
       localStorage.setItem("status_avatar", avatar);
+      localStorage.setItem("status_user_name", userName);
     }
 
     function addMission() {
@@ -299,6 +305,7 @@
       document.getElementById("currentExp").textContent = currentExp;
       document.getElementById("expBar").style.width = currentExp + "%";
       document.getElementById("clearRate").textContent = today.clearRate;
+      document.getElementById("userNameInput").value = userName;
 
       document.getElementById("streakRecord").textContent = `${record.streak} DAY`;
       document.getElementById("avgClearRecord").textContent = `${record.avgClear}%`;
@@ -350,10 +357,11 @@
       document.getElementById("resultRankBand").textContent = rank.name;
 
       document.getElementById("resultHeader").textContent =
-`DATE :: ${new Date().toLocaleDateString("ko-KR")}
+`PLAYER :: ${userName}
 RANK :: ${rank.name}
 LV :: ${level}
 TOTAL EXP :: ${record.totalExp}`;
+      document.getElementById("resultDate").textContent = new Date().toLocaleDateString("ko-KR");
 
       const cleared = today.done.map(m => `■ ${m.name}`).join("\n") || "NONE";
 
@@ -418,6 +426,11 @@ ${cleared}`;
 
     document.getElementById("missionInput").addEventListener("keydown", e => {
       if (e.key === "Enter") addMission();
+    });
+
+    document.getElementById("userNameInput").addEventListener("input", e => {
+      userName = e.target.value.trim() || "USER";
+      save();
     });
 
     render();
