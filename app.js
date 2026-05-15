@@ -297,10 +297,7 @@ TOTAL EXP :: ${record.totalExp}`;
 
   const statExpEntries = Object.entries(today.statExp)
     .map(([key, value]) => `${statNames[key]} +${value} EXP`);
-  const statExp = [
-    statExpEntries.slice(0, 2).join(" / "),
-    statExpEntries.slice(2).join(" / ")
-  ].join("\n");
+  const statExp = statExpEntries.join("\n");
 
   document.getElementById("resultText").textContent =
 `CLEAR RATE :: ${today.clearRate}%
