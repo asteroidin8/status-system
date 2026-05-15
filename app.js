@@ -2,6 +2,7 @@ let missions = JSON.parse(localStorage.getItem("status_missions")) || [];
 let history = JSON.parse(localStorage.getItem("status_history")) || [];
 let avatar = localStorage.getItem("status_avatar") || "";
 let userName = localStorage.getItem("status_user_name") || "USER";
+let missionFilter = "active";
 
 const todayKey = formatLocalDate();
 
@@ -84,6 +85,20 @@ function removeMission(id) {
   log("MISSION DELETED.");
   save();
   render();
+}
+
+function getMissionCounts() {
+  return {
+    all: missions.length,
+    active: missions.filter(m => !m.done).length,
+    done: missions.filter(m => m.done).length
+  };
+}
+
+function getFilteredMissions() {
+  if (missionFilter === "active") return missions.filter(m => !m.done);
+  if (missionFilter === "done") return missions.filter(m => m.done);
+  return missions;
 }
 
 function getTodayStats() {
@@ -217,7 +232,20 @@ function render() {
   document.getElementById("totalExpRecord").textContent = record.totalExp;
   document.getElementById("totalMissionRecord").textContent = record.totalMission;
 
-  document.getElementById("missionList").innerHTML = missions.map(m => `
+  const counts = getMissionCounts();
+  const filteredMissions = getFilteredMissions();
+
+  document.getElementById("filterAllCount").textContent = counts.all;
+  document.getElementById("filterActiveCount").textContent = counts.active;
+  document.getElementById("filterDoneCount").textContent = counts.done;
+  document.querySelectorAll("[data-filter]").forEach(button => {
+    const isActive = button.dataset.filter === missionFilter;
+    button.classList.toggle("active", isActive);
+    button.setAttribute("aria-pressed", String(isActive));
+  });
+
+  document.getElementById("missionList").innerHTML = filteredMissions.length
+    ? filteredMissions.map(m => `
     <div class="mission ${m.done ? "done" : ""}">
       <div class="check" data-action="toggle" data-id="${m.id}"></div>
       <div>
@@ -226,7 +254,8 @@ function render() {
       </div>
       <button data-action="remove" data-id="${m.id}">X</button>
     </div>
-  `).join("");
+  `).join("")
+    : `<div class="mission-empty">표시할 미션이 없습니다.</div>`;
 
   document.getElementById("statsGrid").innerHTML = Object.entries(today.statGain).map(([key, value]) => `
     <div class="stat-row">
@@ -370,8 +399,32 @@ document.getElementById("missionList").addEventListener("click", e => {
   if (!actionTarget) return;
 
   const id = Number(actionTarget.dataset.id);
-  if (actionTarget.dataset.action === "toggle") toggleMission(id);
+  if (actionTarget.dataset.action === "toggle") {
+    const mission = missions.find(m => m.id === id);
+    const shouldAnimateClear = missionFilter === "active" && mission && !mission.done;
+    if (!shouldAnimateClear) {
+      toggleMission(id);
+      return;
+    }
+
+    const missionElement = actionTarget.closest(".mission");
+    if (!missionElement) {
+      toggleMission(id);
+      return;
+    }
+
+    missionElement.classList.add("clearing");
+    missionElement.addEventListener("animationend", () => toggleMission(id), { once: true });
+  }
   if (actionTarget.dataset.action === "remove") removeMission(id);
+});
+
+document.getElementById("missionFilters").addEventListener("click", e => {
+  const filterButton = e.target.closest("[data-filter]");
+  if (!filterButton) return;
+
+  missionFilter = filterButton.dataset.filter;
+  render();
 });
 
 document.getElementById("imageInput").addEventListener("change", e => {

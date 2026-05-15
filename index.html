@@ -67,6 +67,12 @@
 
       <button id="addMissionButton">MISSION ACCEPT</button>
 
+      <div class="mission-filters" id="missionFilters" aria-label="미션 상태 필터">
+        <button type="button" data-filter="all">전체 <span id="filterAllCount">0</span></button>
+        <button type="button" data-filter="active">진행중 <span id="filterActiveCount">0</span></button>
+        <button type="button" data-filter="done">완료 <span id="filterDoneCount">0</span></button>
+      </div>
+
       <div class="mission-list" id="missionList"></div>
 
       <div class="section-title">ACTIVITY RECORD</div>
