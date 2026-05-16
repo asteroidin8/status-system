@@ -35,10 +35,9 @@ export function getTodayStats(missions) {
   return { done, totalExp, clearRate, statGain, statExp };
 }
 
-export function getRecordStats(currentState) {
+export function getRecordStats(currentState, today = getTodayStats(currentState.missions)) {
   const totalExpFromHistory = currentState.history.reduce((sum, history) => sum + history.exp, 0);
   const totalMissionFromHistory = currentState.history.reduce((sum, history) => sum + history.doneCount, 0);
-  const today = getTodayStats(currentState.missions);
 
   const allClearRates = [
     ...currentState.history.map(history => history.clearRate),
@@ -49,7 +48,21 @@ export function getRecordStats(currentState) {
     totalExp: totalExpFromHistory + today.totalExp,
     totalMission: totalMissionFromHistory + today.done.length,
     avgClear: getAverage(allClearRates),
-    streak: getStreak(currentState)
+    streak: getStreak(currentState, today)
+  };
+}
+
+export function getStatusSummary(currentState) {
+  const today = getTodayStats(currentState.missions);
+  const record = getRecordStats(currentState, today);
+  const level = getLevel(record.totalExp);
+
+  return {
+    today,
+    record,
+    level,
+    currentExp: getCurrentExp(record.totalExp),
+    rank: getRank(level)
   };
 }
 
@@ -71,12 +84,12 @@ function getAverage(values) {
     : 0;
 }
 
-function getStreak(currentState) {
+function getStreak(currentState, today) {
   const completedDates = currentState.history
     .filter(history => history.doneCount > 0)
     .map(history => history.date);
 
-  if (getTodayStats(currentState.missions).done.length > 0) {
+  if (today.done.length > 0) {
     completedDates.push(currentState.todayKey);
   }
 
