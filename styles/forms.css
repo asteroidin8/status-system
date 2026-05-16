@@ -65,8 +65,7 @@
   color: var(--rank-color);
   font-size: 20px;
   line-height: 0;
-  transform: translateY(0);
-  transition: border-color 120ms ease, box-shadow 120ms ease, color 120ms ease, transform 120ms ease;
+  transition: border-color 120ms ease, box-shadow 120ms ease, color 120ms ease;
 }
 
 .add-submit:hover,
@@ -75,5 +74,4 @@
   color: #ffffff;
   border-color: #ffffff;
   box-shadow: 0 0 8px color-mix(in srgb, var(--rank-color) 46%, transparent);
-  transform: translateY(-1px);
 }
