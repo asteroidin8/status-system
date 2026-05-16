@@ -62,8 +62,7 @@ export function closeResult() {
   byId("modal").style.display = "none";
 }
 
-export function log(text) {
-  setText("log", text);
+export function log() {
 }
 
 function renderFilters() {
