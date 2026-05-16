@@ -9,7 +9,18 @@
 .player-name input {
   min-width: 0;
   padding: 2px 4px;
+  border-color: transparent;
+  background: transparent;
+  color: var(--rank-color);
+  outline: none;
   text-transform: uppercase;
+}
+
+.player-name input:hover,
+.player-name input:focus-visible {
+  border-color: color-mix(in srgb, var(--rank-color) 72%, transparent);
+  background: rgba(7,9,15,0.78);
+  color: #ffffff;
 }
 
 .bar {
