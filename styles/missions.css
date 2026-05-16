@@ -1,15 +1,8 @@
 .mission-counter {
   margin: 6px 0 4px;
-  padding: 6px 0;
+  padding: 5px 0;
   border-top: 1px dotted color-mix(in srgb, var(--rank-color) 55%, transparent);
   border-bottom: 1px dotted color-mix(in srgb, var(--rank-color) 55%, transparent);
-}
-
-.mission-counter-title {
-  margin-bottom: 3px;
-  font-size: 11px;
-  color: var(--rank-color);
-  letter-spacing: 0.04em;
 }
 
 .mission-counter-row {
@@ -45,13 +38,18 @@
 }
 
 .mission-counter button.active {
-  color: var(--rank-color);
+  color: #ffffff;
   opacity: 1;
+  font-size: 11px;
 }
 
 .mission-counter strong {
   font-size: 15px;
   line-height: 1;
+}
+
+.mission-counter button.active strong {
+  font-size: 18px;
 }
 
 .mission-list {
@@ -140,6 +138,9 @@
 .mission-remove {
   width: 22px;
   height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
   border: none;
   background: transparent;
