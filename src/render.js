@@ -3,21 +3,13 @@ import { byId, setHtml, setText } from "./dom.js";
 import { escapeHtml } from "./html.js";
 import { state } from "./state.js";
 import {
-  getCurrentExp,
   getFilteredMissions,
-  getLevel,
   getMissionCounts,
-  getRank,
-  getRecordStats,
-  getTodayStats
+  getStatusSummary
 } from "./stats.js";
 
 export function render() {
-  const today = getTodayStats(state.missions);
-  const record = getRecordStats(state);
-  const level = getLevel(record.totalExp);
-  const currentExp = getCurrentExp(record.totalExp);
-  const rank = getRank(level);
+  const { today, record, level, currentExp, rank } = getStatusSummary(state);
 
   byId("app").className = `app ${rank.className}`;
   setText("rankText", rank.name);
@@ -50,10 +42,7 @@ export function renderAvatar() {
 }
 
 export function openResult() {
-  const today = getTodayStats(state.missions);
-  const record = getRecordStats(state);
-  const level = getLevel(record.totalExp);
-  const rank = getRank(level);
+  const { today, record, level, rank } = getStatusSummary(state);
 
   byId("resultCard").className = `result-card ${rank.className}`;
   setText("resultHeader", [
