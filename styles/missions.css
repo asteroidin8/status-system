@@ -1,22 +1,61 @@
-.mission-filters {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 6px;
-  margin: 8px 0;
+.mission-counter {
+  margin: 6px 0 4px;
+  padding: 6px 0;
+  border-top: 1px dotted color-mix(in srgb, var(--rank-color) 55%, transparent);
+  border-bottom: 1px dotted color-mix(in srgb, var(--rank-color) 55%, transparent);
 }
 
-.mission-filters button {
-  padding: 7px 6px;
+.mission-counter-title {
+  margin-bottom: 3px;
   font-size: 11px;
+  color: var(--rank-color);
+  letter-spacing: 0.04em;
 }
 
-.mission-filters button.active {
-  background: var(--rank-color);
-  color: #07090f;
+.mission-counter-row {
+  display: flex;
+  align-items: baseline;
+  gap: 7px;
+}
+
+.mission-counter button {
+  width: auto;
+  display: inline-flex;
+  align-items: baseline;
+  gap: 3px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #eaf1ff;
+  font-size: 10px;
+  opacity: 0.58;
+}
+
+.mission-counter button + button::before {
+  content: "/";
+  margin-right: 4px;
+  color: rgba(234,241,255,0.35);
+}
+
+.mission-counter button:hover,
+.mission-counter button:focus-visible {
+  background: transparent;
+  color: var(--rank-color);
+  opacity: 1;
+}
+
+.mission-counter button.active {
+  color: var(--rank-color);
+  opacity: 1;
+}
+
+.mission-counter strong {
+  font-size: 15px;
+  line-height: 1;
 }
 
 .mission-list {
-  max-height: 220px;
+  max-height: 190px;
   overflow-y: auto;
   padding-right: 4px;
   scrollbar-width: none;
@@ -28,12 +67,11 @@
 
 .mission {
   display: grid;
-  grid-template-columns: 26px 1fr auto;
-  gap: 8px;
-  align-items: center;
-  padding: 10px 0;
-  border-bottom: 1px dotted rgba(255,255,255,0.2);
-  font-size: 13px;
+  grid-template-columns: 18px minmax(0, 1fr) 22px;
+  gap: 6px;
+  align-items: start;
+  padding: 6px 0;
+  border-bottom: 1px dotted rgba(255,255,255,0.16);
 }
 
 .mission.clearing {
@@ -42,25 +80,40 @@
 }
 
 .mission-empty {
-  padding: 14px 0;
-  border-bottom: 1px dotted rgba(255,255,255,0.2);
+  padding: 10px 0;
+  border-bottom: 1px dotted rgba(255,255,255,0.16);
   font-size: 12px;
-  opacity: 0.55;
-  text-align: center;
+  color: var(--rank-color);
+  opacity: 0.72;
+  text-align: left;
 }
 
 .check {
-  width: 22px;
-  height: 22px;
-  border: 1px solid var(--rank-color);
+  width: 18px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: var(--rank-color);
   display: grid;
   place-items: center;
+  font-size: 14px;
+  line-height: 1;
   cursor: pointer;
 }
 
-.mission.done .check::before {
-  content: "✓";
+.check::before {
+  content: "☐";
+}
+
+.check:hover,
+.check:focus-visible {
+  background: transparent;
   color: var(--rank-color);
+}
+
+.mission.done .check::before {
+  content: "☑";
 }
 
 .mission.done .name {
@@ -68,9 +121,38 @@
   opacity: 0.55;
 }
 
+.mission-body {
+  min-width: 0;
+}
+
+.name {
+  font-size: 13px;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+}
+
 .meta {
+  margin-top: 2px;
   font-size: 11px;
   opacity: 0.65;
+}
+
+.mission-remove {
+  width: 22px;
+  height: 18px;
+  padding: 0;
+  border: none;
+  background: transparent;
+  color: #eaf1ff;
+  font-size: 11px;
+  opacity: 0.24;
+}
+
+.mission:hover .mission-remove,
+.mission-remove:focus-visible {
+  background: transparent;
+  color: var(--rank-color);
+  opacity: 1;
 }
 
 @keyframes mission-clear {

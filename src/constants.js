@@ -5,6 +5,20 @@ export const statNames = {
   life: "생활력"
 };
 
+export const statShortNames = {
+  focus: "집중",
+  energy: "체력",
+  knowledge: "지식",
+  life: "생활"
+};
+
+export const expSymbols = {
+  5: "◇",
+  15: "◆",
+  30: "◆◆",
+  60: "◆◆◆"
+};
+
 export const storageKeys = {
   missions: "status_missions",
   history: "status_history",

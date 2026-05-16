@@ -50,26 +50,37 @@
 
       <div class="add">
         <select id="statInput">
-          <option value="focus">집중력</option>
+          <option value="focus">집중</option>
           <option value="energy">체력</option>
           <option value="knowledge">지식</option>
-          <option value="life">생활력</option>
+          <option value="life">생활</option>
         </select>
         <input id="missionInput" placeholder="미션 입력" />
         <select id="expInput">
-          <option value="5">EASY</option>
-          <option value="15" selected>NORMAL</option>
-          <option value="30">HARD</option>
-          <option value="60">BOSS</option>
+          <option value="5">◇</option>
+          <option value="15" selected>◆</option>
+          <option value="30">◆◆</option>
+          <option value="60">◆◆◆</option>
         </select>
+        <button id="addMissionButton" class="add-submit" type="button" aria-label="미션 등록">+</button>
       </div>
 
-      <button id="addMissionButton">MISSION ACCEPT</button>
-
-      <div class="mission-filters" id="missionFilters" aria-label="미션 상태 필터">
-        <button type="button" data-filter="all">전체 <span id="filterAllCount">0</span></button>
-        <button type="button" data-filter="active">진행중 <span id="filterActiveCount">0</span></button>
-        <button type="button" data-filter="done">완료 <span id="filterDoneCount">0</span></button>
+      <div class="mission-counter" id="missionFilters" aria-label="미션 상태 필터">
+        <div class="mission-counter-title">MISSION COUNT</div>
+        <div class="mission-counter-row">
+          <button type="button" data-filter="all">
+            <span>ALL</span>
+            <strong id="filterAllCount">00</strong>
+          </button>
+          <button type="button" data-filter="active">
+            <span>ACTIVE</span>
+            <strong id="filterActiveCount">00</strong>
+          </button>
+          <button type="button" data-filter="done">
+            <span>CLEAR</span>
+            <strong id="filterDoneCount">00</strong>
+          </button>
+        </div>
       </div>
 
       <div class="mission-list" id="missionList"></div>
