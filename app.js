@@ -217,7 +217,6 @@ function render() {
   const rank = getRank(level);
 
   document.getElementById("app").className = `app ${rank.className}`;
-  document.getElementById("rankBand").textContent = rank.name;
   document.getElementById("rankText").textContent = rank.name;
   document.getElementById("level").textContent = level;
   document.getElementById("currentExp").textContent = currentExp;
@@ -286,7 +285,6 @@ function openResult() {
   const rank = getRank(level);
 
   document.getElementById("resultCard").className = `result-card ${rank.className}`;
-  document.getElementById("resultRankBand").textContent = rank.name;
 
   document.getElementById("resultHeader").textContent =
 `PLAYER :: ${userName}
