@@ -22,7 +22,7 @@ button {
   appearance: none;
 }
 
-:where(input, select, button, .interactive-control) {
+:where(input, select, button) {
   width: 100%;
   background: #07090f;
   color: #eaf1ff;
@@ -32,16 +32,16 @@ button {
   font-size: 13px;
 }
 
-:where(select, button, .interactive-control) {
+:where(select, button) {
   cursor: pointer;
 }
 
-:where(button, .interactive-control) {
+:where(button) {
   font-weight: bold;
 }
 
-:where(button, .interactive-control):hover,
-:where(button, .interactive-control):focus-visible {
+:where(button):hover,
+:where(button):focus-visible {
   background: var(--rank-color);
   color: #07090f;
 }
