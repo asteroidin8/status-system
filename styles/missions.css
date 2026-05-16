@@ -38,10 +38,9 @@
 }
 
 .mission-counter button.active {
-  color: var(--rank-color);
+  color: #ffffff;
   opacity: 1;
   font-size: 11px;
-  text-shadow: 0 0 7px color-mix(in srgb, var(--rank-color) 58%, transparent);
 }
 
 .mission-counter strong {
