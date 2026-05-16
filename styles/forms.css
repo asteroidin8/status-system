@@ -62,6 +62,16 @@
   align-items: center;
   justify-content: center;
   padding: 0;
-  font-size: 18px;
-  line-height: 1;
+  color: var(--rank-color);
+  font-size: 20px;
+  line-height: 0;
+  transition: border-color 120ms ease, box-shadow 120ms ease, color 120ms ease;
+}
+
+.add-submit:hover,
+.add-submit:focus-visible {
+  background: rgba(7,9,15,0.78);
+  color: #ffffff;
+  border-color: #ffffff;
+  box-shadow: 0 0 8px color-mix(in srgb, var(--rank-color) 46%, transparent);
 }
