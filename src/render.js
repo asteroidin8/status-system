@@ -1,4 +1,4 @@
-import { statNames } from "./constants.js";
+import { expSymbols, statNames, statShortNames } from "./constants.js";
 import { byId, setHtml, setText } from "./dom.js";
 import { escapeHtml } from "./html.js";
 import { state } from "./state.js";
@@ -68,9 +68,9 @@ export function log(text) {
 
 function renderFilters() {
   const counts = getMissionCounts(state.missions);
-  setText("filterAllCount", counts.all);
-  setText("filterActiveCount", counts.active);
-  setText("filterDoneCount", counts.done);
+  setText("filterAllCount", formatCount(counts.all));
+  setText("filterActiveCount", formatCount(counts.active));
+  setText("filterDoneCount", formatCount(counts.done));
 
   document.querySelectorAll("[data-filter]").forEach(button => {
     const isActive = button.dataset.filter === state.missionFilter;
@@ -84,20 +84,31 @@ function renderMissionList() {
 
   setHtml("missionList", filteredMissions.length
     ? filteredMissions.map(getMissionHtml).join("")
-    : `<div class="mission-empty">표시할 미션이 없습니다.</div>`);
+    : `<div class="mission-empty">${getEmptyMissionText()}</div>`);
 }
 
 function getMissionHtml(mission) {
   return `
     <div class="mission ${mission.done ? "done" : ""}">
-      <div class="check" data-action="toggle" data-id="${mission.id}"></div>
-      <div>
+      <button class="check" type="button" data-action="toggle" data-id="${mission.id}" aria-label="미션 상태 변경"></button>
+      <div class="mission-body">
         <div class="name">${escapeHtml(mission.name)}</div>
-        <div class="meta">${statNames[mission.stat]} · +${mission.exp} EXP</div>
+        <div class="meta">${statShortNames[mission.stat]} · ${expSymbols[mission.exp]} · +${mission.exp} EXP</div>
       </div>
-      <button data-action="remove" data-id="${mission.id}">X</button>
+      <button class="mission-remove" data-action="remove" data-id="${mission.id}" type="button" aria-label="미션 삭제">X</button>
     </div>
   `;
+}
+
+function getEmptyMissionText() {
+  if (state.missions.length === 0) return "새 미션을 등록하십시오.";
+  if (state.missionFilter === "active") return "진행 중인 미션이 없습니다.";
+  if (state.missionFilter === "done") return "완료된 미션이 없습니다.";
+  return "새 미션을 등록하십시오.";
+}
+
+function formatCount(count) {
+  return String(count).padStart(2, "0");
 }
 
 function renderStats(statGain) {
