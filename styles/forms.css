@@ -26,7 +26,7 @@
 
 .add {
   display: grid;
-  grid-template-columns: 1fr 92px 92px;
+  grid-template-columns: 86px minmax(0, 1fr) 82px;
   gap: 8px;
   margin-bottom: 8px;
 }
