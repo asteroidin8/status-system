@@ -13,8 +13,6 @@ const statNames = {
   life: "생활력"
 };
 
-const resultMissionLimit = 3;
-
 function escapeHtml(text) {
   return String(text)
     .replaceAll("&", "&amp;")
@@ -297,19 +295,9 @@ LV :: ${level}
 TOTAL EXP :: ${record.totalExp}`;
   document.getElementById("resultDate").textContent = new Date().toLocaleDateString("ko-KR");
 
-  const displayedMissions = today.done.slice(0, resultMissionLimit);
-  const hiddenMissionCount = Math.max(today.done.length - displayedMissions.length, 0);
-  const cleared = [
-    ...displayedMissions.map(m => `■ ${m.name}`),
-    hiddenMissionCount ? `■ 외 ${hiddenMissionCount}개` : ""
-  ].filter(Boolean).join("\n") || "NONE";
-
   const statExpEntries = Object.entries(today.statExp)
     .map(([key, value]) => `${statNames[key]} +${value} EXP`);
-  const statExp = [
-    statExpEntries.slice(0, 2).join(" / "),
-    statExpEntries.slice(2).join(" / ")
-  ].join("\n");
+  const statExp = statExpEntries.join("\n");
 
   document.getElementById("resultText").textContent =
 `CLEAR RATE :: ${today.clearRate}%
@@ -317,10 +305,7 @@ MISSION :: ${today.done.length}/${missions.length}
 STREAK :: ${record.streak} DAY
 
 STAT GAIN
-${statExp}
-
-CLEARED
-${cleared}`;
+${statExp}`;
 
   renderAvatar();
   document.getElementById("modal").style.display = "flex";
