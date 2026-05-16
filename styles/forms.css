@@ -26,7 +26,7 @@
 
 .add {
   display: grid;
-  grid-template-columns: 62px minmax(0, 1fr) 56px 34px;
+  grid-template-columns: 62px minmax(0, 1fr) 54px 34px;
   gap: 5px;
   align-items: center;
   margin-bottom: 6px;
@@ -46,13 +46,21 @@
   padding-left: 5px;
 }
 
+#expInput {
+  appearance: none;
+  padding-right: 4px;
+  padding-left: 4px;
+  text-align: center;
+}
+
 .add input {
   letter-spacing: 0.02em;
 }
 
 .add-submit {
-  display: grid;
-  place-items: center;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   padding: 0;
   font-size: 18px;
   line-height: 1;
