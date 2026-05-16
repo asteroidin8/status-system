@@ -12,6 +12,7 @@ import {
   updateUserName
 } from "./actions.js";
 import { byId } from "./dom.js";
+import { readFileAsText } from "./file.js";
 import { closeResult, openResult, render, log } from "./render.js";
 import { state } from "./state.js";
 
@@ -55,18 +56,20 @@ byId("importDataInput").addEventListener("change", event => {
   const file = event.target.files[0];
   if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    try {
-      importData(JSON.parse(reader.result));
-    } catch {
-      log("DATA IMPORT FAILED.");
-      alert("가져올 수 없는 데이터입니다.");
-    } finally {
+  readFileAsText(file)
+    .then(result => {
+      try {
+        importData(JSON.parse(result));
+      } catch {
+        handleImportFailure();
+      } finally {
+        event.target.value = "";
+      }
+    })
+    .catch(() => {
+      handleImportFailure();
       event.target.value = "";
-    }
-  };
-  reader.readAsText(file);
+    });
 });
 
 byId("missionInput").addEventListener("keydown", event => {
@@ -95,4 +98,9 @@ function toggleMissionWithAnimation(actionTarget, id) {
 
   missionElement.classList.add("clearing");
   missionElement.addEventListener("animationend", () => toggleMission(id), { once: true });
+}
+
+function handleImportFailure() {
+  log("DATA IMPORT FAILED.");
+  alert("가져올 수 없는 데이터입니다.");
 }
