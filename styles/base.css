@@ -1,0 +1,47 @@
+* { box-sizing: border-box; }
+
+:root { --rank-color: #8b8f99; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: #07090f;
+  color: #eaf1ff;
+  font-family: "Courier New", monospace;
+  display: flex;
+  justify-content: center;
+  padding: 20px;
+}
+
+h1 {
+  margin: 0 0 6px;
+  font-size: 24px;
+}
+
+button {
+  appearance: none;
+}
+
+:where(input, select, button, .interactive-control) {
+  width: 100%;
+  background: #07090f;
+  color: #eaf1ff;
+  border: 1px solid var(--rank-color);
+  padding: 10px;
+  font-family: inherit;
+  font-size: 13px;
+}
+
+:where(select, button, .interactive-control) {
+  cursor: pointer;
+}
+
+:where(button, .interactive-control) {
+  font-weight: bold;
+}
+
+:where(button, .interactive-control):hover,
+:where(button, .interactive-control):focus-visible {
+  background: var(--rank-color);
+  color: #07090f;
+}

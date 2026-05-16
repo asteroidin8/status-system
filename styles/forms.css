@@ -1,0 +1,32 @@
+.player-name {
+  display: inline-grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 6px;
+  align-items: center;
+  width: 100%;
+}
+
+.player-name input {
+  min-width: 0;
+  padding: 2px 4px;
+  text-transform: uppercase;
+}
+
+.bar {
+  height: 10px;
+  border: 1px solid var(--rank-color);
+  margin-top: 6px;
+}
+
+.bar-fill {
+  height: 100%;
+  width: 0%;
+  background: var(--rank-color);
+}
+
+.add {
+  display: grid;
+  grid-template-columns: 1fr 92px 92px;
+  gap: 8px;
+  margin-bottom: 8px;
+}
