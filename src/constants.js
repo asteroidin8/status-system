@@ -12,11 +12,9 @@ export const storageKeys = {
   userName: "status_user_name"
 };
 
-export const defaultState = {
-  avatar: "",
-  userName: "USER",
-  missionFilter: "active"
-};
+export const defaultAvatar = "";
+export const defaultUserName = "USER";
+export const defaultMissionFilter = "active";
 
 export const rankRules = [
   { minLevel: 35, name: "S급", className: "rank-s" },

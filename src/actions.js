@@ -1,8 +1,9 @@
 import { byId } from "./dom.js";
+import { readFileAsDataUrl } from "./file.js";
 import { render, renderAvatar, log } from "./render.js";
 import { saveState, state } from "./state.js";
 import { getTodayStats } from "./stats.js";
-import { statNames } from "./constants.js";
+import { defaultUserName, statNames } from "./constants.js";
 
 export function addMission() {
   const input = byId("missionInput");
@@ -126,7 +127,7 @@ export function importData(data) {
   state.avatar = typeof data.avatar === "string" ? data.avatar : "";
   state.userName = typeof data.userName === "string" && data.userName.trim()
     ? data.userName.trim()
-    : "USER";
+    : defaultUserName;
 
   saveState();
   render();
@@ -136,18 +137,19 @@ export function importData(data) {
 export function updateAvatar(file) {
   if (!file) return;
 
-  const reader = new FileReader();
-  reader.onload = () => {
-    state.avatar = reader.result;
+  readFileAsDataUrl(file).then(result => {
+    state.avatar = result;
     saveState();
     renderAvatar();
     log("USER IMAGE UPDATED.");
-  };
-  reader.readAsDataURL(file);
+  }).catch(() => {
+    log("USER IMAGE UPDATE FAILED.");
+    alert("이미지를 불러오지 못했습니다.");
+  });
 }
 
 export function updateUserName(value) {
-  state.userName = value.trim() || "USER";
+  state.userName = value.trim() || defaultUserName;
   saveState();
 }
 

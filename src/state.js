@@ -1,13 +1,13 @@
-import { defaultState, storageKeys } from "./constants.js";
+import { defaultAvatar, defaultMissionFilter, defaultUserName, storageKeys } from "./constants.js";
 import { formatLocalDate } from "./date.js";
 import { readJson, writeJson } from "./storage.js";
 
 export const state = {
   missions: readJson(storageKeys.missions, []),
   history: readJson(storageKeys.history, []),
-  avatar: localStorage.getItem(storageKeys.avatar) || defaultState.avatar,
-  userName: localStorage.getItem(storageKeys.userName) || defaultState.userName,
-  missionFilter: defaultState.missionFilter,
+  avatar: localStorage.getItem(storageKeys.avatar) || defaultAvatar,
+  userName: localStorage.getItem(storageKeys.userName) || defaultUserName,
+  missionFilter: defaultMissionFilter,
   todayKey: formatLocalDate()
 };
 
