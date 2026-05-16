@@ -94,7 +94,7 @@ function getMissionHtml(mission) {
         <div class="name">${escapeHtml(mission.name)}</div>
         <div class="meta">${statShortNames[mission.stat]} · ${expSymbols[mission.exp]} · +${mission.exp} EXP</div>
       </div>
-      <button class="mission-remove" data-action="remove" data-id="${mission.id}" type="button" aria-label="미션 삭제">X</button>
+      <button class="mission-remove" data-action="remove" data-id="${mission.id}" type="button" aria-label="미션 삭제">×</button>
     </div>
   `;
 }
