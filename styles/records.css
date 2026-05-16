@@ -1,0 +1,41 @@
+.record-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+}
+
+.record-card {
+  border: 1px solid var(--rank-color);
+  padding: 10px;
+  font-size: 12px;
+}
+
+.record-card strong {
+  display: block;
+  font-size: 18px;
+  color: var(--rank-color);
+  margin-top: 4px;
+}
+
+.stats-grid {
+  display: grid;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.stat-row {
+  display: grid;
+  grid-template-columns: 58px 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+
+.mini-bar {
+  height: 8px;
+  border: 1px solid var(--rank-color);
+}
+
+.mini-fill {
+  height: 100%;
+  background: var(--rank-color);
+}

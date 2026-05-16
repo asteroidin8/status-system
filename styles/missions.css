@@ -1,0 +1,100 @@
+.mission-filters {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.mission-filters button {
+  padding: 7px 6px;
+  font-size: 11px;
+}
+
+.mission-filters button.active {
+  background: var(--rank-color);
+  color: #07090f;
+}
+
+.mission-list {
+  max-height: 220px;
+  overflow-y: auto;
+  padding-right: 4px;
+  scrollbar-width: none;
+}
+
+.mission-list::-webkit-scrollbar {
+  display: none;
+}
+
+.mission {
+  display: grid;
+  grid-template-columns: 26px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 10px 0;
+  border-bottom: 1px dotted rgba(255,255,255,0.2);
+  font-size: 13px;
+}
+
+.mission.clearing {
+  pointer-events: none;
+  animation: mission-clear 320ms steps(2, end) forwards;
+}
+
+.mission-empty {
+  padding: 14px 0;
+  border-bottom: 1px dotted rgba(255,255,255,0.2);
+  font-size: 12px;
+  opacity: 0.55;
+  text-align: center;
+}
+
+.check {
+  width: 22px;
+  height: 22px;
+  border: 1px solid var(--rank-color);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+}
+
+.mission.done .check::before {
+  content: "✓";
+  color: var(--rank-color);
+}
+
+.mission.done .name {
+  text-decoration: line-through;
+  opacity: 0.55;
+}
+
+.meta {
+  font-size: 11px;
+  opacity: 0.65;
+}
+
+@keyframes mission-clear {
+  0% {
+    opacity: 1;
+    transform: translateX(0);
+    filter: none;
+  }
+
+  35% {
+    opacity: 0.75;
+    transform: translateX(-2px);
+    filter: contrast(1.8);
+  }
+
+  65% {
+    opacity: 0.35;
+    transform: translateX(3px);
+    filter: contrast(2.2);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateX(12px);
+    filter: blur(1px);
+  }
+}
